@@ -110,20 +110,36 @@
         }
         .add-to-cart-wide:hover { background: rgba(0, 210, 255, 0.1); }
 
-        /* ==================== نافذة تفاصيل المنتج ==================== */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
+        /* ==================== نافذة تفاصيل المنتج (زجاجية) ==================== */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
         .modal-overlay.active { display: flex; }
+        
         .cart-modal { background: #111118; border: 1px solid var(--rmz-border); border-radius: 1.25rem; max-width: 500px; width: 100%; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.6); }
         
-        .product-wide-modal { max-width: 95vw !important; width: 1100px; display: flex; flex-direction: row; height: 80vh; border-radius: 20px; overflow: hidden; }
-        .product-image-side { flex: 1.2; background: #000; display: flex; align-items: center; justify-content: center; border-left: 1px solid var(--rmz-border); position: relative; overflow: hidden; }
+        /* التصميم الزجاجي الشفاف للنافذة العريضة */
+        .product-wide-modal { 
+            max-width: 95vw !important; 
+            width: 1100px; 
+            display: flex; 
+            flex-direction: row; 
+            height: 80vh; 
+            border-radius: 20px; 
+            overflow: hidden;
+            background: rgba(17, 17, 24, 0.6); /* شفافية */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .product-image-side { flex: 1.2; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; border-left: 1px solid var(--rmz-border); position: relative; overflow: hidden; }
         .product-image-side img { width: 100%; height: 100%; object-fit: contain; }
         .product-image-side .placeholder-icon { font-size: 6rem; color: var(--rmz-text-muted); opacity: 0.2; }
         
-        .product-info-side { flex: 1; padding: 2.5rem; display: flex; flex-direction: column; overflow-y: auto; background: #111118; }
+        .product-info-side { flex: 1; padding: 2.5rem; display: flex; flex-direction: column; overflow-y: auto; }
         .product-info-side h2 { font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
         .product-info-side .price { font-size: 1.5rem; font-weight: 700; color: #00d2ff; margin-bottom: 1.5rem; }
         
+        /* الوصف وزر عرض المزيد */
         .desc-container { margin-bottom: 2rem; flex: 1; position: relative; }
         .desc-text { color: var(--rmz-text-muted); font-size: 1rem; line-height: 1.8; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; transition: all 0.3s ease; }
         .desc-text.expanded { -webkit-line-clamp: unset; display: block; }
@@ -145,7 +161,7 @@
         .share-row a { color: var(--rmz-text-muted); font-size: 1rem; transition: 0.2s; }
         .share-row a:hover { color: #fff; }
 
-        /* ==================== السلة ولوحة التحكم ==================== */
+        /* السلة ولوحة التحكم */
         .cart-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--rmz-border); }
         .cart-modal-header h2 { font-size: 1.2rem; font-weight: 700; color: #fff; }
         .close-btn { background: rgba(255,255,255,0.05); border: none; color: var(--rmz-text-muted); width: 36px; height: 36px; border-radius: 0.75rem; cursor: pointer; }
@@ -222,7 +238,7 @@
         <div class="products-grid" id="store-products"></div>
     </main>
 
-    <!-- نافذة تفاصيل المنتج (العريضة) -->
+    <!-- نافذة تفاصيل المنتج (زجاجية) -->
     <div class="modal-overlay" id="product-modal">
         <div class="cart-modal product-wide-modal">
             <div class="product-image-side">
@@ -426,7 +442,19 @@
         }
 
         function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+        }
+
+        // إغلاق النافذة عند الضغط في الخارج
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal(this.id);
+                }
+            });
+        });
 
         // ==================== المتجر ====================
         function renderStore() {
