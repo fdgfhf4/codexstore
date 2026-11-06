@@ -40,7 +40,7 @@
         main { max-width: 1280px; margin: 0 auto; padding: 3rem 1.5rem; }
         .section-title { text-align: center; font-size: 1.75rem; font-weight: 700; color: #fff; margin-bottom: 2rem; }
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; }
-        .product-card { background: var(--rmz-surface); backdrop-filter: blur(20px); border: 1px solid var(--rmz-border); border-radius: 1rem; overflow: hidden; display: flex; flex-direction: column; transition: 0.2s; }
+        .product-card { background: var(--rmz-surface); backdrop-filter: blur(20px); border: 1px solid var(--rmz-border); border-radius: 1rem; overflow: hidden; display: flex; flex-direction: column; transition: 0.2s; cursor: pointer; }
         .product-card:hover { transform: translateY(-4px); border-color: rgba(0, 210, 255, 0.3); }
         .product-image { aspect-ratio: 1; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; }
         .product-image img { width: 100%; height: 100%; object-fit: cover; }
@@ -53,6 +53,7 @@
         .add-to-cart-btn { background: var(--rmz-primary); color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .add-to-cart-btn:hover { background: #0052cc; }
 
+        /* النوافذ */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
         .modal-overlay.active { display: flex; }
         .cart-modal { background: #111118; border: 1px solid var(--rmz-border); border-radius: 1.25rem; max-width: 500px; width: 100%; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.6); }
@@ -74,6 +75,22 @@
         .checkout-btn { width: 100%; height: 48px; background: var(--rmz-primary); color: #fff; border: none; border-radius: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .checkout-btn:hover { background: #0052cc; }
 
+        /* نافذة تفاصيل المنتج */
+        .product-details-modal { max-width: 600px; }
+        .product-details-image { width: 100%; max-height: 300px; object-fit: cover; border-radius: 1rem; margin-bottom: 1rem; }
+        .product-details-title { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+        .product-details-desc { color: var(--rmz-text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.6; }
+        .product-details-price { font-size: 1.8rem; font-weight: 700; color: #00d2ff; margin-bottom: 1.5rem; }
+        
+        .qty-selector { display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.05); padding: 0.5rem; border-radius: 0.75rem; width: fit-content; margin-bottom: 1.5rem; }
+        .qty-selector button { background: var(--rmz-primary); color: #fff; border: none; width: 36px; height: 36px; border-radius: 0.5rem; font-size: 1.2rem; cursor: pointer; }
+        .qty-selector span { font-size: 1.2rem; font-weight: bold; width: 40px; text-align: center; }
+        
+        .action-buttons { display: flex; gap: 1rem; }
+        .btn-buy-now { flex: 1; padding: 1rem; background: #10b981; color: #fff; border: none; border-radius: 0.75rem; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .btn-add-cart { flex: 1; padding: 1rem; background: var(--rmz-primary); color: #fff; border: none; border-radius: 0.75rem; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+
+        /* لوحة التحكم */
         .admin-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--rmz-border); padding-bottom: 1rem; }
         .admin-tab { padding: 0.5rem 1rem; cursor: pointer; color: var(--rmz-text-muted); border-radius: 0.5rem; background: transparent; border: none; }
         .admin-tab.active { background: var(--rmz-primary); color: #fff; }
@@ -121,6 +138,37 @@
         <h2 class="section-title" id="products-grid">أحدث المنتجات</h2>
         <div class="products-grid" id="store-products"></div>
     </main>
+
+    <!-- نافذة تفاصيل المنتج -->
+    <div class="modal-overlay" id="product-modal">
+        <div class="cart-modal product-details-modal">
+            <div class="cart-modal-header">
+                <h2>تفاصيل المنتج</h2>
+                <button class="close-btn" onclick="closeModal('product-modal')">&times;</button>
+            </div>
+            <div style="padding: 1.5rem;">
+                <img id="modal-img" class="product-details-image" src="" alt="">
+                <h2 id="modal-title" class="product-details-title"></h2>
+                <p id="modal-desc" class="product-details-desc"></p>
+                <div id="modal-price" class="product-details-price"></div>
+                
+                <div class="qty-selector">
+                    <button onclick="updateModalQty(1)">+</button>
+                    <span id="modal-qty">1</span>
+                    <button onclick="updateModalQty(-1)">-</button>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-add-cart" onclick="addFromModal()">
+                        <i class="fas fa-shopping-bag"></i> أضف للسلة
+                    </button>
+                    <button class="btn-buy-now" onclick="buyNowFromModal()">
+                        <i class="fas fa-bolt"></i> شراء الآن
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- نافذة السلة -->
     <div class="modal-overlay" id="cart-modal">
@@ -185,11 +233,12 @@
                         <div class="form-group"><label>السعر (ر.س)</label><input type="number" id="p-price" class="form-control"></div>
                         <div class="form-group"><label>رابط الصورة (URL)</label><input type="text" id="p-image" class="form-control"></div>
                         <div class="form-group"><label>الوصف</label><input type="text" id="p-desc" class="form-control"></div>
+                        <div class="form-group"><label>المفاتيح (سطر لكل مفتاح)</label><textarea id="p-keys" class="form-control" rows="3" placeholder="KEY-XXXX-XXXX&#10;KEY-YYYY-YYYY"></textarea></div>
                         <button class="checkout-btn" style="width:auto; padding:0.5rem 1rem;" onclick="saveProduct()">حفظ</button>
                         <button class="close-btn" onclick="hideProductForm()">إلغاء</button>
                     </div>
                     <table class="admin-table" id="admin-products-table">
-                        <thead><tr><th>المنتج</th><th>السعر</th><th>حذف</th></tr></thead>
+                        <thead><tr><th>المنتج</th><th>السعر</th><th>المخزون</th><th>حذف</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -217,14 +266,17 @@
     <div class="toast" id="toast">تم بنجاح</div>
 
     <script>
-        // ==================== البيانات الافتراضية ====================
+        // ==================== البيانات ====================
         let products = JSON.parse(localStorage.getItem('codex_products')) || [
-            { id: '1', name: "Fortnite - 1000 V-Bucks", price: 40, image: "", desc: "شحن فوري" },
-            { id: '2', name: "MW3 - حساب كامل", price: 250, image: "", desc: "حساب مع ضمان" }
+            { id: '1', name: "Fortnite - 1000 V-Bucks", price: 40, image: "", desc: "شحن فوري", keys: [] },
+            { id: '2', name: "MW3 - حساب كامل", price: 250, image: "", desc: "حساب مع ضمان", keys: [] }
         ];
         let orders = JSON.parse(localStorage.getItem('codex_orders')) || [];
         let cart = JSON.parse(localStorage.getItem('codex_cart')) || [];
         let settings = JSON.parse(localStorage.getItem('codex_settings')) || { whatsapp: "966500000000" };
+
+        let currentProduct = null;
+        let currentModalQty = 1;
 
         function saveData() {
             localStorage.setItem('codex_products', JSON.stringify(products));
@@ -247,26 +299,68 @@
                 return;
             }
             container.innerHTML = products.map(p => `
-                <div class="product-card">
+                <div class="product-card" onclick="openProductDetails('${p.id}')">
                     ${p.image ? `<div class="product-image"><img src="${p.image}"></div>` : `<div class="product-image"><i class="fas fa-box placeholder-icon"></i></div>`}
                     <div class="product-info">
                         <h3>${p.name}</h3>
                         <div class="product-category">${p.desc || 'متوفر الآن'}</div>
                         <div class="product-footer">
                             <span class="product-price">${p.price} ر.س</span>
-                            <button class="add-to-cart-btn" onclick="addToCart('${p.id}')"><i class="fas fa-plus"></i></button>
+                            <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${p.id}')"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        function addToCart(id) {
+        // ==================== نافذة تفاصيل المنتج ====================
+        function openProductDetails(id) {
+            currentProduct = products.find(p => p.id === id);
+            if (!currentProduct) return;
+            
+            currentModalQty = 1;
+            document.getElementById('modal-qty').textContent = currentModalQty;
+            document.getElementById('modal-title').textContent = currentProduct.name;
+            document.getElementById('modal-desc').textContent = currentProduct.desc || 'لا يوجد وصف لهذا المنتج.';
+            document.getElementById('modal-price').textContent = currentProduct.price + ' ر.س';
+            
+            const img = document.getElementById('modal-img');
+            if (currentProduct.image) {
+                img.src = currentProduct.image;
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
+            }
+            
+            document.getElementById('product-modal').classList.add('active');
+        }
+
+        function updateModalQty(delta) {
+            currentModalQty += delta;
+            if (currentModalQty < 1) currentModalQty = 1;
+            document.getElementById('modal-qty').textContent = currentModalQty;
+        }
+
+        function addFromModal() {
+            for (let i = 0; i < currentModalQty; i++) {
+                addToCart(currentProduct.id, true);
+            }
+            closeModal('product-modal');
+            showToast('تمت الإضافة للسلة');
+        }
+
+        function buyNowFromModal() {
+            addFromModal();
+            openCart();
+        }
+
+        function addToCart(id, silent = false) {
             const product = products.find(p => p.id === id);
             const existing = cart.find(c => c.id === id);
             if (existing) existing.qty++;
             else cart.push({ ...product, qty: 1 });
-            saveData(); showToast('تمت الإضافة للسلة');
+            saveData(); 
+            if(!silent) showToast('تمت الإضافة للسلة');
         }
 
         function openCart() { renderCart(); document.getElementById('cart-modal').classList.add('active'); }
@@ -304,9 +398,27 @@
             if (cart.length === 0) return alert('السلة فارغة!');
             let total = cart.reduce((sum, c) => sum + (c.price * c.qty), 0);
             const orderId = 'ORD-' + Date.now().toString().slice(-6);
+            
+            // استخراج المفاتيح
+            let deliveredKeys = [];
+            cart.forEach(c => {
+                const prod = products.find(p => p.id === c.id);
+                if (prod && prod.keys && prod.keys.length > 0) {
+                    for(let i=0; i<c.qty; i++) {
+                        if(prod.keys.length > 0) deliveredKeys.push(prod.keys.shift());
+                    }
+                    saveData();
+                }
+            });
+
             orders.push({ id: orderId, customer: "عميل", items: cart.map(c => `${c.name} (x${c.qty})`).join(', '), total: total.toFixed(2) });
             saveData();
-            let waText = `مرحباً، أريد طلب:\n${cart.map(c => `- ${c.name} (x${c.qty})`).join('\n')}\n\nالإجمالي: ${total} ر.س`;
+
+            let waText = `مرحباً، أريد طلب:\n${cart.map(c => `- ${c.name} (x${c.qty})`).join('\n')}\n\nالإجمالي: ${total} ر.س\nرقم الطلب: ${orderId}`;
+            if(deliveredKeys.length > 0) {
+                waText += `\n\nمفاتيحك جاهزة:\n${deliveredKeys.join('\n')}`;
+            }
+            
             window.open(`https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(waText)}`, '_blank');
             cart = []; saveData(); closeModal('cart-modal'); showToast('تم إرسال الطلب!');
         }
@@ -318,92 +430,4 @@
         function loginAdmin() {
             if (document.getElementById('admin-user').value === ADMIN_USER && document.getElementById('admin-pass').value === ADMIN_PASS) {
                 closeModal('admin-login-modal'); document.getElementById('admin-modal').classList.add('active'); renderAdminTables();
-            } else alert('بيانات الدخول خاطئة!');
-        }
-        function switchAdminTab(tabName) {
-            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-            event.target.classList.add('active'); document.getElementById('admin-tab-' + tabName).classList.add('active');
-        }
-        function showProductForm() { document.getElementById('product-form').style.display = 'block'; }
-        function hideProductForm() { document.getElementById('product-form').style.display = 'none'; }
-        function saveProduct() {
-            const name = document.getElementById('p-name').value, price = parseFloat(document.getElementById('p-price').value);
-            if (!name || !price) return alert('أدخل اسم وسعر المنتج');
-            products.push({ id: Date.now().toString(), name, price, image: document.getElementById('p-image').value, desc: document.getElementById('p-desc').value });
-            saveData(); hideProductForm();
-            document.getElementById('p-name').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-image').value = ''; document.getElementById('p-desc').value = '';
-            showToast('تم إضافة المنتج');
-        }
-        function deleteProduct(id) { if (confirm('تأكيد الحذف؟')) { products = products.filter(p => p.id !== id); saveData(); } }
-        function saveSettings() { settings.whatsapp = document.getElementById('s-whatsapp').value; saveData(); showToast('تم حفظ الإعدادات'); }
-        function renderAdminTables() {
-            document.querySelector('#admin-products-table tbody').innerHTML = products.map(p => `<tr><td>${p.name}</td><td>${p.price} ر.س</td><td><button class="cart-item-remove" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button></td></tr>`).join('');
-            document.querySelector('#admin-orders-table tbody').innerHTML = orders.map(o => `<tr><td>${o.customer}</td><td>${o.items}</td><td>${o.total} ر.س</td></tr>`).join('');
-            document.getElementById('s-whatsapp').value = settings.whatsapp;
-        }
-
-        // ==================== 5. خلفية النجوم والتفاعل ====================
-        renderStore();
-        updateCartCount();
-
-        const canvas = document.getElementById('canvas-particles-bg');
-        const ctx = canvas.getContext('2d');
-        let width, height, particles = [];
-        const mouse = { x: null, y: null, radius: 180 };
-
-        window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-
-        function resizeCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.6;
-                this.vy = (Math.random() - 0.5) * 0.6;
-                this.radius = Math.random() * 1.5 + 1;
-            }
-            update() {
-                this.x += this.vx; this.y += this.vy;
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-                if (mouse.x !== null && mouse.y !== null) {
-                    const dx = mouse.x - this.x; const dy = mouse.y - this.y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-                    if (dist < mouse.radius) {
-                        const force = (mouse.radius - dist) / mouse.radius;
-                        this.x -= (dx / dist) * force * 3;
-                        this.y -= (dy / dist) * force * 3;
-                    }
-                }
-            }
-            draw() {
-                ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = '#00d2ff'; ctx.shadowColor = '#00d2ff'; ctx.shadowBlur = 6; ctx.fill();
-            }
-        }
-
-        for (let i = 0; i < Math.min(Math.floor((window.innerWidth * window.innerHeight) / 10000), 80); i++) particles.push(new Particle());
-
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update(); particles[i].draw();
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x; const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-                    if (dist < 120) {
-                        ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(0, 210, 255, ${(1 - dist / 120) * 0.3})`; ctx.lineWidth = 0.6; ctx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-        animate();
-    </script>
-</body>
-</html>
+            } else alert('بيانات الدخ
