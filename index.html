@@ -53,7 +53,6 @@
         .add-to-cart-btn { background: var(--rmz-primary); color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .add-to-cart-btn:hover { background: #0052cc; }
 
-        /* النوافذ */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
         .modal-overlay.active { display: flex; }
         .cart-modal { background: #111118; border: 1px solid var(--rmz-border); border-radius: 1.25rem; max-width: 500px; width: 100%; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.6); }
@@ -75,7 +74,6 @@
         .checkout-btn { width: 100%; height: 48px; background: var(--rmz-primary); color: #fff; border: none; border-radius: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .checkout-btn:hover { background: #0052cc; }
 
-        /* نافذة تفاصيل المنتج */
         .product-details-modal { max-width: 600px; }
         .product-details-image { width: 100%; max-height: 300px; object-fit: cover; border-radius: 1rem; margin-bottom: 1rem; }
         .product-details-title { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
@@ -90,7 +88,6 @@
         .btn-buy-now { flex: 1; padding: 1rem; background: #10b981; color: #fff; border: none; border-radius: 0.75rem; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
         .btn-add-cart { flex: 1; padding: 1rem; background: var(--rmz-primary); color: #fff; border: none; border-radius: 0.75rem; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
 
-        /* لوحة التحكم */
         .admin-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--rmz-border); padding-bottom: 1rem; }
         .admin-tab { padding: 0.5rem 1rem; cursor: pointer; color: var(--rmz-text-muted); border-radius: 0.5rem; background: transparent; border: none; }
         .admin-tab.active { background: var(--rmz-primary); color: #fff; }
@@ -105,6 +102,10 @@
         #admin-trigger { cursor: pointer; color: #333; font-size: 12px; }
         #admin-trigger:hover { color: #00d2ff; }
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 10px 20px; border-radius: 8px; display: none; z-index: 9999; }
+        
+        .bank-info-box { background: rgba(0, 210, 255, 0.1); border: 1px dashed #00d2ff; padding: 1rem; border-radius: 0.5rem; text-align: center; margin-bottom: 1.5rem; }
+        .bank-info-box h3 { color: #fff; font-size: 1rem; margin-bottom: 0.5rem; }
+        .bank-iban { color: #00d2ff; font-size: 1.2rem; font-weight: bold; letter-spacing: 1px; direction: ltr; }
     </style>
 </head>
 <body>
@@ -183,7 +184,31 @@
                     <span>المجموع:</span>
                     <span id="cart-total-price">0 ر.س</span>
                 </div>
-                <button class="checkout-btn" onclick="checkout()">إتمام الطلب (واتساب)</button>
+                <button class="checkout-btn" onclick="processCheckout()">إتمام الطلب</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الدفع البنكي -->
+    <div class="modal-overlay" id="payment-modal">
+        <div class="cart-modal" style="max-width: 450px;">
+            <div class="cart-modal-header">
+                <h2>إتمام الدفع</h2>
+                <button class="close-btn" onclick="closeModal('payment-modal')">&times;</button>
+            </div>
+            <div style="padding: 1.5rem;">
+                <div class="bank-info-box">
+                    <h3>يرجى تحويل المبلغ إلى الحساب التالي:</h3>
+                    <div class="bank-iban" id="iban-display"></div>
+                    <h3 style="margin-top:0.5rem;">البنك: <span id="bank-name-display"></span></h3>
+                    <h3>المستفيد: <span id="account-name-display"></span></h3>
+                </div>
+                <p style="color:var(--rmz-text-muted); font-size:0.9rem; text-align:center; margin-bottom:1.5rem;">
+                    بعد إتمام التحويل، اضغط على الزر أدناه لتأكيد الطلب عبر الواتساب.
+                </p>
+                <button class="checkout-btn" style="background:#25D366;" onclick="checkoutWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> لقد قمت بالتحويل - إرسال إشعار
+                </button>
             </div>
         </div>
     </div>
@@ -233,6 +258,7 @@
                         <div class="form-group"><label>السعر (ر.س)</label><input type="number" id="p-price" class="form-control"></div>
                         <div class="form-group"><label>رابط الصورة (URL)</label><input type="text" id="p-image" class="form-control"></div>
                         <div class="form-group"><label>الوصف</label><input type="text" id="p-desc" class="form-control"></div>
+                        <div class="form-group"><label>رابط الدفع (Paymob) - اختياري</label><input type="text" id="p-paylink" class="form-control" placeholder="https://..."></div>
                         <div class="form-group"><label>المفاتيح (سطر لكل مفتاح)</label><textarea id="p-keys" class="form-control" rows="3" placeholder="KEY-XXXX-XXXX&#10;KEY-YYYY-YYYY"></textarea></div>
                         <button class="checkout-btn" style="width:auto; padding:0.5rem 1rem;" onclick="saveProduct()">حفظ</button>
                         <button class="close-btn" onclick="hideProductForm()">إلغاء</button>
@@ -252,10 +278,22 @@
                 </div>
 
                 <div id="admin-tab-settings" class="admin-section">
-                    <h3 style="color:#fff; margin-bottom:1rem;">إعدادات المتجر</h3>
+                    <h3 style="color:#fff; margin-bottom:1rem;">إعدادات المتجر (للتحويل البنكي)</h3>
                     <div class="form-group">
                         <label>رقم الواتساب</label>
                         <input type="text" id="s-whatsapp" class="form-control" placeholder="966500000000">
+                    </div>
+                    <div class="form-group">
+                        <label>اسم البنك</label>
+                        <input type="text" id="s-bank-name" class="form-control" placeholder="مثال: بنك الراجحي">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الآيبان (IBAN)</label>
+                        <input type="text" id="s-iban" class="form-control" placeholder="SA0000000000000000000000">
+                    </div>
+                    <div class="form-group">
+                        <label>اسم صاحب الحساب</label>
+                        <input type="text" id="s-account-name" class="form-control" placeholder="الاسم الكامل">
                     </div>
                     <button class="checkout-btn" style="width:auto; padding:0.5rem 1rem;" onclick="saveSettings()">حفظ الإعدادات</button>
                 </div>
@@ -268,12 +306,17 @@
     <script>
         // ==================== البيانات ====================
         let products = JSON.parse(localStorage.getItem('codex_products')) || [
-            { id: '1', name: "Fortnite - 1000 V-Bucks", price: 40, image: "", desc: "شحن فوري", keys: [] },
-            { id: '2', name: "MW3 - حساب كامل", price: 250, image: "", desc: "حساب مع ضمان", keys: [] }
+            { id: '1', name: "Fortnite - 1000 V-Bucks", price: 40, image: "", desc: "شحن فوري", paylink: "", keys: [] },
+            { id: '2', name: "MW3 - حساب كامل", price: 250, image: "", desc: "حساب مع ضمان", paylink: "", keys: [] }
         ];
         let orders = JSON.parse(localStorage.getItem('codex_orders')) || [];
         let cart = JSON.parse(localStorage.getItem('codex_cart')) || [];
-        let settings = JSON.parse(localStorage.getItem('codex_settings')) || { whatsapp: "966500000000" };
+        let settings = JSON.parse(localStorage.getItem('codex_settings')) || { 
+            whatsapp: "966500000000",
+            bankName: "البنك الأهلي",
+            iban: "SA0000000000000000000000",
+            accountName: "اسم صاحب الحساب"
+        };
 
         let currentProduct = null;
         let currentModalQty = 1;
@@ -350,6 +393,11 @@
         }
 
         function buyNowFromModal() {
+            if (currentProduct.paylink && currentModalQty === 1) {
+                // تحويل مباشر لبوابة الدفع
+                window.open(currentProduct.paylink, '_blank');
+                return;
+            }
             addFromModal();
             openCart();
         }
@@ -394,12 +442,27 @@
         function updateCartCount() { document.getElementById('cart-count').textContent = cart.reduce((sum, c) => sum + c.qty, 0); }
 
         // ==================== إتمام الطلب ====================
-        function checkout() {
+        function processCheckout() {
             if (cart.length === 0) return alert('السلة فارغة!');
+            
+            // إذا كان هناك منتج واحد فقط ويملك رابط دفع
+            if (cart.length === 1 && cart[0].paylink && cart[0].qty === 1) {
+                window.open(cart[0].paylink, '_blank');
+                return;
+            }
+
+            // وإلا يعرض التحويل البنكي
+            document.getElementById('iban-display').textContent = settings.iban;
+            document.getElementById('bank-name-display').textContent = settings.bankName;
+            document.getElementById('account-name-display').textContent = settings.accountName;
+            closeModal('cart-modal');
+            document.getElementById('payment-modal').classList.add('active');
+        }
+
+        function checkoutWhatsApp() {
             let total = cart.reduce((sum, c) => sum + (c.price * c.qty), 0);
             const orderId = 'ORD-' + Date.now().toString().slice(-6);
             
-            // استخراج المفاتيح
             let deliveredKeys = [];
             cart.forEach(c => {
                 const prod = products.find(p => p.id === c.id);
@@ -414,13 +477,11 @@
             orders.push({ id: orderId, customer: "عميل", items: cart.map(c => `${c.name} (x${c.qty})`).join(', '), total: total.toFixed(2) });
             saveData();
 
-            let waText = `مرحباً، أريد طلب:\n${cart.map(c => `- ${c.name} (x${c.qty})`).join('\n')}\n\nالإجمالي: ${total} ر.س\nرقم الطلب: ${orderId}`;
-            if(deliveredKeys.length > 0) {
-                waText += `\n\nمفاتيحك جاهزة:\n${deliveredKeys.join('\n')}`;
-            }
+            let waText = `مرحباً، لقد قمت بالتحويل.\n${cart.map(c => `- ${c.name} (x${c.qty})`).join('\n')}\n\nالإجمالي: ${total} ر.س\nرقم الطلب: ${orderId}`;
+            if(deliveredKeys.length > 0) waText += `\n\nمفاتيحك جاهزة:\n${deliveredKeys.join('\n')}`;
             
             window.open(`https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(waText)}`, '_blank');
-            cart = []; saveData(); closeModal('cart-modal'); showToast('تم إرسال الطلب!');
+            cart = []; saveData(); closeModal('payment-modal'); showToast('تم إرسال الطلب!');
         }
 
         // ==================== لوحة التحكم ====================
@@ -430,4 +491,102 @@
         function loginAdmin() {
             if (document.getElementById('admin-user').value === ADMIN_USER && document.getElementById('admin-pass').value === ADMIN_PASS) {
                 closeModal('admin-login-modal'); document.getElementById('admin-modal').classList.add('active'); renderAdminTables();
-            } else alert('بيانات الدخ
+            } else alert('بيانات الدخول خاطئة!');
+        }
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+            event.target.classList.add('active'); document.getElementById('admin-tab-' + tabName).classList.add('active');
+        }
+        function showProductForm() { document.getElementById('product-form').style.display = 'block'; }
+        function hideProductForm() { document.getElementById('product-form').style.display = 'none'; }
+        function saveProduct() {
+            const name = document.getElementById('p-name').value, price = parseFloat(document.getElementById('p-price').value);
+            const keys = document.getElementById('p-keys').value.split('\n').filter(k => k.trim() !== '');
+            if (!name || !price) return alert('أدخل اسم وسعر المنتج');
+            products.push({ id: Date.now().toString(), name, price, image: document.getElementById('p-image').value, desc: document.getElementById('p-desc').value, paylink: document.getElementById('p-paylink').value, keys });
+            saveData(); hideProductForm();
+            document.getElementById('p-name').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-image').value = ''; document.getElementById('p-desc').value = ''; document.getElementById('p-keys').value = ''; document.getElementById('p-paylink').value = '';
+            showToast('تم إضافة المنتج');
+        }
+        function deleteProduct(id) { if (confirm('تأكيد الحذف؟')) { products = products.filter(p => p.id !== id); saveData(); } }
+        function saveSettings() { 
+            settings.whatsapp = document.getElementById('s-whatsapp').value; 
+            settings.bankName = document.getElementById('s-bank-name').value; 
+            settings.iban = document.getElementById('s-iban').value; 
+            settings.accountName = document.getElementById('s-account-name').value; 
+            saveData(); showToast('تم حفظ الإعدادات'); 
+        }
+        function renderAdminTables() {
+            document.querySelector('#admin-products-table tbody').innerHTML = products.map(p => `<tr><td>${p.name}</td><td>${p.price} ر.س</td><td>${p.keys ? p.keys.length : 0}</td><td><button class="cart-item-remove" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button></td></tr>`).join('');
+            document.querySelector('#admin-orders-table tbody').innerHTML = orders.map(o => `<tr><td>${o.customer}</td><td>${o.items}</td><td>${o.total} ر.س</td></tr>`).join('');
+            document.getElementById('s-whatsapp').value = settings.whatsapp;
+            document.getElementById('s-bank-name').value = settings.bankName;
+            document.getElementById('s-iban').value = settings.iban;
+            document.getElementById('s-account-name').value = settings.accountName;
+        }
+
+        // ==================== 5. خلفية النجوم ====================
+        renderStore();
+        updateCartCount();
+
+        const canvas = document.getElementById('canvas-particles-bg');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+        const mouse = { x: null, y: null, radius: 180 };
+
+        window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+        function resizeCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.6;
+                this.vy = (Math.random() - 0.5) * 0.6;
+                this.radius = Math.random() * 1.5 + 1;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+                if (mouse.x !== null && mouse.y !== null) {
+                    const dx = mouse.x - this.x; const dy = mouse.y - this.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < mouse.radius) {
+                        const force = (mouse.radius - dist) / mouse.radius;
+                        this.x -= (dx / dist) * force * 3;
+                        this.y -= (dy / dist) * force * 3;
+                    }
+                }
+            }
+            draw() {
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#00d2ff'; ctx.shadowColor = '#00d2ff'; ctx.shadowBlur = 6; ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < Math.min(Math.floor((window.innerWidth * window.innerHeight) / 10000), 80); i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update(); particles[i].draw();
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x; const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 120) {
+                        ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(0, 210, 255, ${(1 - dist / 120) * 0.3})`; ctx.lineWidth = 0.6; ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
