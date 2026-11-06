@@ -56,41 +56,50 @@
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
         .modal-overlay.active { display: flex; }
         
-        /* نافذة تفاصيل المنتج (عريضة مثل الصورة) */
         .cart-modal { background: #111118; border: 1px solid var(--rmz-border); border-radius: 1.25rem; max-width: 500px; width: 100%; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.6); }
         
+        /* تنسيق النافذة العريضة جداً */
         .product-wide-modal { 
-            max-width: 90vw !important; /* تأخذ 90% من الشاشة */
-            width: 1200px; 
+            max-width: 95vw !important;
+            width: 1100px; 
             display: flex; 
             flex-direction: row; 
-            height: 85vh; 
+            height: 80vh; 
             border-radius: 20px;
             overflow: hidden;
         }
         
         .product-image-side { flex: 1.2; background: #000; display: flex; align-items: center; justify-content: center; border-left: 1px solid var(--rmz-border); position: relative; overflow: hidden; }
-        .product-image-side img { width: 100%; height: 100%; object-fit: contain; } /* object-fit: contain لكي تظهر الصورة كاملة */
+        .product-image-side img { width: 100%; height: 100%; object-fit: contain; }
         .product-image-side .placeholder-icon { font-size: 6rem; color: var(--rmz-text-muted); opacity: 0.2; }
         
-        .product-info-side { flex: 1; padding: 3rem; display: flex; flex-direction: column; overflow-y: auto; background: #111118; }
-        .product-info-side h2 { font-size: 2.5rem; font-weight: 700; color: #fff; margin-bottom: 1rem; }
-        .product-info-side .price { font-size: 1.8rem; font-weight: 700; color: #00d2ff; margin-bottom: 2rem; }
-        .product-info-side .desc { color: var(--rmz-text-muted); font-size: 1.1rem; line-height: 2; margin-bottom: 3rem; flex: 1; }
+        .product-info-side { flex: 1; padding: 2.5rem; display: flex; flex-direction: column; overflow-y: auto; background: #111118; }
+        .product-info-side h2 { font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+        .product-info-side .price { font-size: 1.5rem; font-weight: 700; color: #00d2ff; margin-bottom: 1.5rem; }
         
-        .qty-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+        /* تنسيق الوصف وزر عرض المزيد */
+        .desc-container { margin-bottom: 2rem; flex: 1; position: relative; }
+        .desc-text { color: var(--rmz-text-muted); font-size: 1rem; line-height: 1.8; max-height: 120px; overflow: hidden; transition: max-height 0.3s ease; }
+        .desc-text.expanded { max-height: 2000px; }
+        .desc-fade { position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(transparent, #111118); pointer-events: none; transition: opacity 0.3s; }
+        .desc-text.expanded + .desc-fade { opacity: 0; }
+        
+        .btn-show-more { background: transparent; border: none; color: var(--rmz-primary); font-weight: 600; cursor: pointer; font-size: 0.95rem; margin-top: 0.5rem; display: inline-block; font-family: inherit; }
+        .btn-show-more:hover { text-decoration: underline; }
+
+        .qty-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
         .qty-row span { color: #fff; font-weight: 600; font-size: 1.1rem; }
         .qty-selector { display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.05); padding: 0.5rem; border-radius: 0.75rem; }
         .qty-selector button { background: transparent; color: #fff; border: none; width: 36px; height: 36px; font-size: 1.5rem; cursor: pointer; }
         .qty-selector span { font-size: 1.3rem; font-weight: bold; width: 40px; text-align: center; }
 
-        .btn-add-cart { width: 100%; padding: 1.2rem; background: var(--rmz-primary); color: #fff; border: none; border-radius: 0.75rem; font-weight: bold; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; }
-        .btn-buy-now { width: 100%; padding: 1.2rem; background: transparent; color: var(--rmz-primary); border: 1.5px solid var(--rmz-primary); border-radius: 0.75rem; font-weight: bold; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .btn-add-cart { width: 100%; padding: 1rem; background: var(--rmz-primary); color: #fff; border: none; border-radius: 0.75rem; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+        .btn-buy-now { width: 100%; padding: 1rem; background: transparent; color: var(--rmz-primary); border: 1px solid var(--rmz-primary); border-radius: 0.75rem; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
         .btn-buy-now:hover { background: rgba(0,102,255,0.1); }
 
-        .share-row { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--rmz-border); }
-        .share-row span { color: var(--rmz-text-muted); font-size: 1rem; }
-        .share-row a { color: var(--rmz-text-muted); font-size: 1.3rem; transition: 0.2s; }
+        .share-row { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--rmz-border); }
+        .share-row span { color: var(--rmz-text-muted); font-size: 0.85rem; }
+        .share-row a { color: var(--rmz-text-muted); font-size: 1rem; transition: 0.2s; }
         .share-row a:hover { color: #fff; }
 
         /* السلة ولوحة التحكم */
@@ -135,7 +144,7 @@
             .product-wide-modal { flex-direction: column; height: 90vh; width: 95vw; }
             .product-image-side { height: 40%; border-left: none; border-bottom: 1px solid var(--rmz-border); }
             .product-info-side { padding: 1.5rem; }
-            .product-info-side h2 { font-size: 1.8rem; }
+            .product-info-side h2 { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -171,7 +180,7 @@
         <div class="products-grid" id="store-products"></div>
     </main>
 
-    <!-- نافذة تفاصيل المنتج (عريضة جداً) -->
+    <!-- نافذة تفاصيل المنتج (العريضة) -->
     <div class="modal-overlay" id="product-modal">
         <div class="cart-modal product-wide-modal">
             <div class="product-image-side">
@@ -181,7 +190,12 @@
             <div class="product-info-side">
                 <h2 id="modal-title"></h2>
                 <div class="price" id="modal-price"></div>
-                <div class="desc" id="modal-desc"></div>
+                
+                <div class="desc-container">
+                    <div class="desc-text" id="modal-desc"></div>
+                    <div class="desc-fade" id="modal-desc-fade"></div>
+                    <button class="btn-show-more" id="btn-show-more" onclick="toggleDesc()">عرض المزيد</button>
+                </div>
                 
                 <div class="qty-row">
                     <span>الكمية</span>
@@ -358,6 +372,7 @@
 
         let currentProduct = null;
         let currentModalQty = 1;
+        let isDescExpanded = false;
 
         function saveData() {
             localStorage.setItem('codex_products', JSON.stringify(products));
@@ -394,7 +409,7 @@
             `).join('');
         }
 
-        // ==================== نافذة تفاصيل المنتج (العريضة) ====================
+        // ==================== نافذة تفاصيل المنتج ====================
         function openProductDetails(id) {
             currentProduct = products.find(p => p.id === id);
             if (!currentProduct) return;
@@ -405,6 +420,20 @@
             document.getElementById('modal-desc').textContent = currentProduct.desc || 'لا يوجد وصف لهذا المنتج.';
             document.getElementById('modal-price').textContent = currentProduct.price + ' ر.س';
             
+            // إعادة تعيين حالة الوصف
+            const descText = document.getElementById('modal-desc');
+            descText.classList.remove('expanded');
+            document.getElementById('btn-show-more').textContent = 'عرض المزيد';
+            isDescExpanded = false;
+            // إخفاء الزر إذا كان النص قصيراً
+            if(descText.scrollHeight <= 120) {
+                document.getElementById('btn-show-more').style.display = 'none';
+                document.getElementById('modal-desc-fade').style.display = 'none';
+            } else {
+                document.getElementById('btn-show-more').style.display = 'inline-block';
+                document.getElementById('modal-desc-fade').style.display = 'block';
+            }
+
             const img = document.getElementById('modal-img');
             const placeholder = document.getElementById('modal-placeholder');
             if (currentProduct.image) {
@@ -417,6 +446,19 @@
             }
             
             document.getElementById('product-modal').classList.add('active');
+        }
+
+        function toggleDesc() {
+            const descText = document.getElementById('modal-desc');
+            const btn = document.getElementById('btn-show-more');
+            isDescExpanded = !isDescExpanded;
+            if (isDescExpanded) {
+                descText.classList.add('expanded');
+                btn.textContent = 'عرض أقل';
+            } else {
+                descText.classList.remove('expanded');
+                btn.textContent = 'عرض المزيد';
+            }
         }
 
         function updateModalQty(delta) {
