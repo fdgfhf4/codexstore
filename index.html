@@ -79,12 +79,32 @@
         
         /* تنسيق الوصف وزر عرض المزيد */
         .desc-container { margin-bottom: 2rem; flex: 1; position: relative; }
-        .desc-text { color: var(--rmz-text-muted); font-size: 1rem; line-height: 1.8; max-height: 120px; overflow: hidden; transition: max-height 0.3s ease; }
-        .desc-text.expanded { max-height: 2000px; }
-        .desc-fade { position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(transparent, #111118); pointer-events: none; transition: opacity 0.3s; }
-        .desc-text.expanded + .desc-fade { opacity: 0; }
+        .desc-text { 
+            color: var(--rmz-text-muted); 
+            font-size: 1rem; 
+            line-height: 1.8; 
+            display: -webkit-box;
+            -webkit-line-clamp: 4; /* عدد الأسطر المسموح بها */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .desc-text.expanded { 
+            -webkit-line-clamp: unset; 
+            display: block;
+        }
         
-        .btn-show-more { background: transparent; border: none; color: var(--rmz-primary); font-weight: 600; cursor: pointer; font-size: 0.95rem; margin-top: 0.5rem; display: inline-block; font-family: inherit; }
+        .btn-show-more { 
+            background: transparent; 
+            border: none; 
+            color: var(--rmz-primary); 
+            font-weight: 600; 
+            cursor: pointer; 
+            font-size: 0.95rem; 
+            margin-top: 0.5rem; 
+            display: inline-block; 
+            font-family: inherit; 
+        }
         .btn-show-more:hover { text-decoration: underline; }
 
         .qty-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
@@ -139,7 +159,6 @@
         .bank-info-box h3 { color: #fff; font-size: 1rem; margin-bottom: 0.5rem; }
         .bank-iban { color: #00d2ff; font-size: 1.2rem; font-weight: bold; letter-spacing: 1px; direction: ltr; }
 
-        /* للجوال (تكون النافذة عمودية إذا كانت الشاشة صغيرة) */
         @media (max-width: 768px) {
             .product-wide-modal { flex-direction: column; height: 90vh; width: 95vw; }
             .product-image-side { height: 40%; border-left: none; border-bottom: 1px solid var(--rmz-border); }
@@ -193,7 +212,6 @@
                 
                 <div class="desc-container">
                     <div class="desc-text" id="modal-desc"></div>
-                    <div class="desc-fade" id="modal-desc-fade"></div>
                     <button class="btn-show-more" id="btn-show-more" onclick="toggleDesc()">عرض المزيد</button>
                 </div>
                 
@@ -425,14 +443,6 @@
             descText.classList.remove('expanded');
             document.getElementById('btn-show-more').textContent = 'عرض المزيد';
             isDescExpanded = false;
-            // إخفاء الزر إذا كان النص قصيراً
-            if(descText.scrollHeight <= 120) {
-                document.getElementById('btn-show-more').style.display = 'none';
-                document.getElementById('modal-desc-fade').style.display = 'none';
-            } else {
-                document.getElementById('btn-show-more').style.display = 'inline-block';
-                document.getElementById('modal-desc-fade').style.display = 'block';
-            }
 
             const img = document.getElementById('modal-img');
             const placeholder = document.getElementById('modal-placeholder');
