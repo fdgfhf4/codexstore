@@ -56,32 +56,41 @@
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 1rem; }
         .modal-overlay.active { display: flex; }
         
-        /* تنسيق النافذة العريضة (مثل الصورة) */
+        /* نافذة تفاصيل المنتج (عريضة مثل الصورة) */
         .cart-modal { background: #111118; border: 1px solid var(--rmz-border); border-radius: 1.25rem; max-width: 500px; width: 100%; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.6); }
-        .cart-modal.product-wide-modal { max-width: 900px; display: flex; flex-direction: row; height: 550px; }
         
-        .product-image-side { flex: 1; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; border-left: 1px solid var(--rmz-border); position: relative; overflow: hidden; }
-        .product-image-side img { width: 100%; height: 100%; object-fit: cover; }
+        .product-wide-modal { 
+            max-width: 90vw !important; /* تأخذ 90% من الشاشة */
+            width: 1200px; 
+            display: flex; 
+            flex-direction: row; 
+            height: 85vh; 
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        .product-image-side { flex: 1.2; background: #000; display: flex; align-items: center; justify-content: center; border-left: 1px solid var(--rmz-border); position: relative; overflow: hidden; }
+        .product-image-side img { width: 100%; height: 100%; object-fit: contain; } /* object-fit: contain لكي تظهر الصورة كاملة */
         .product-image-side .placeholder-icon { font-size: 6rem; color: var(--rmz-text-muted); opacity: 0.2; }
         
-        .product-info-side { flex: 1; padding: 2rem; display: flex; flex-direction: column; overflow-y: auto; }
-        .product-info-side h2 { font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
-        .product-info-side .price { font-size: 1.5rem; font-weight: 700; color: #00d2ff; margin-bottom: 1.5rem; }
-        .product-info-side .desc { color: var(--rmz-text-muted); font-size: 0.95rem; line-height: 1.8; margin-bottom: 2rem; flex: 1; }
+        .product-info-side { flex: 1; padding: 3rem; display: flex; flex-direction: column; overflow-y: auto; background: #111118; }
+        .product-info-side h2 { font-size: 2.5rem; font-weight: 700; color: #fff; margin-bottom: 1rem; }
+        .product-info-side .price { font-size: 1.8rem; font-weight: 700; color: #00d2ff; margin-bottom: 2rem; }
+        .product-info-side .desc { color: var(--rmz-text-muted); font-size: 1.1rem; line-height: 2; margin-bottom: 3rem; flex: 1; }
         
         .qty-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
-        .qty-row span { color: #fff; font-weight: 600; }
+        .qty-row span { color: #fff; font-weight: 600; font-size: 1.1rem; }
         .qty-selector { display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.05); padding: 0.5rem; border-radius: 0.75rem; }
-        .qty-selector button { background: transparent; color: #fff; border: none; width: 32px; height: 32px; font-size: 1.2rem; cursor: pointer; }
-        .qty-selector span { font-size: 1.1rem; font-weight: bold; width: 30px; text-align: center; }
+        .qty-selector button { background: transparent; color: #fff; border: none; width: 36px; height: 36px; font-size: 1.5rem; cursor: pointer; }
+        .qty-selector span { font-size: 1.3rem; font-weight: bold; width: 40px; text-align: center; }
 
-        .btn-add-cart { width: 100%; padding: 1rem; background: var(--rmz-primary); color: #fff; border: none; border-radius: 0.75rem; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; }
-        .btn-buy-now { width: 100%; padding: 1rem; background: transparent; color: var(--rmz-primary); border: 1px solid var(--rmz-primary); border-radius: 0.75rem; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .btn-add-cart { width: 100%; padding: 1.2rem; background: var(--rmz-primary); color: #fff; border: none; border-radius: 0.75rem; font-weight: bold; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; }
+        .btn-buy-now { width: 100%; padding: 1.2rem; background: transparent; color: var(--rmz-primary); border: 1.5px solid var(--rmz-primary); border-radius: 0.75rem; font-weight: bold; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
         .btn-buy-now:hover { background: rgba(0,102,255,0.1); }
 
-        .share-row { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--rmz-border); }
-        .share-row span { color: var(--rmz-text-muted); font-size: 0.85rem; }
-        .share-row a { color: var(--rmz-text-muted); font-size: 1rem; transition: 0.2s; }
+        .share-row { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--rmz-border); }
+        .share-row span { color: var(--rmz-text-muted); font-size: 1rem; }
+        .share-row a { color: var(--rmz-text-muted); font-size: 1.3rem; transition: 0.2s; }
         .share-row a:hover { color: #fff; }
 
         /* السلة ولوحة التحكم */
@@ -120,6 +129,14 @@
         .bank-info-box { background: rgba(0, 210, 255, 0.1); border: 1px dashed #00d2ff; padding: 1rem; border-radius: 0.5rem; text-align: center; margin-bottom: 1.5rem; }
         .bank-info-box h3 { color: #fff; font-size: 1rem; margin-bottom: 0.5rem; }
         .bank-iban { color: #00d2ff; font-size: 1.2rem; font-weight: bold; letter-spacing: 1px; direction: ltr; }
+
+        /* للجوال (تكون النافذة عمودية إذا كانت الشاشة صغيرة) */
+        @media (max-width: 768px) {
+            .product-wide-modal { flex-direction: column; height: 90vh; width: 95vw; }
+            .product-image-side { height: 40%; border-left: none; border-bottom: 1px solid var(--rmz-border); }
+            .product-info-side { padding: 1.5rem; }
+            .product-info-side h2 { font-size: 1.8rem; }
+        }
     </style>
 </head>
 <body>
@@ -154,7 +171,7 @@
         <div class="products-grid" id="store-products"></div>
     </main>
 
-    <!-- نافذة تفاصيل المنتج (العريضة) -->
+    <!-- نافذة تفاصيل المنتج (عريضة جداً) -->
     <div class="modal-overlay" id="product-modal">
         <div class="cart-modal product-wide-modal">
             <div class="product-image-side">
@@ -278,7 +295,7 @@
                         <div class="form-group"><label>اسم المنتج</label><input type="text" id="p-name" class="form-control"></div>
                         <div class="form-group"><label>السعر (ر.س)</label><input type="number" id="p-price" class="form-control"></div>
                         <div class="form-group"><label>رابط الصورة (URL)</label><input type="text" id="p-image" class="form-control"></div>
-                        <div class="form-group"><label>الوصف</label><input type="text" id="p-desc" class="form-control"></div>
+                        <div class="form-group"><label>الوصف</label><textarea id="p-desc" class="form-control" rows="3"></textarea></div>
                         <div class="form-group"><label>رابط الدفع (Paymob) - اختياري</label><input type="text" id="p-paylink" class="form-control" placeholder="https://..."></div>
                         <div class="form-group"><label>المفاتيح (سطر لكل مفتاح)</label><textarea id="p-keys" class="form-control" rows="3" placeholder="KEY-XXXX-XXXX&#10;KEY-YYYY-YYYY"></textarea></div>
                         <button class="checkout-btn" style="width:auto; padding:0.5rem 1rem;" onclick="saveProduct()">حفظ</button>
